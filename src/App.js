@@ -35,13 +35,22 @@ function App() {
     wizard.src = Wizard;
     player.current = new Player(context, GAME_WIDTH, GAME_HEIGHT, 64, wizard);
 
-    var game = new Game(context, GAME_WIDTH, GAME_HEIGHT, 64, tiles, player.current);
+    var game = new Game(
+      context,
+      GAME_WIDTH,
+      GAME_HEIGHT,
+      64,
+      tiles,
+      player.current
+    );
+
+    player.current.game = game;
 
     gameInt.current = setInterval(() => {
       game.init();
       game.draw();
       game.update();
-    }, 1000 / 120);
+    }, 1000 / 60);
   }, [tiles]);
 
   return (
