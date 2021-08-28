@@ -8,6 +8,7 @@ export default class Game {
     this.COLS = this.w / this.char_size;
     this.tiles = tiles;
     this.player = player;
+    this.keys = [];
   }
 
   layers = [
@@ -30,39 +31,32 @@ export default class Game {
   isSolidTile = (x, y) => {
     const startTileX = Math.floor(y / 64);
     const startTileY = Math.floor(x / 64);
-    console.log(x,y,startTileX, startTileY);
     return this.layers[0][startTileX][startTileY] === 1;
   };
 
   init() {
-    window.addEventListener("keydown", (e) =>
-      this.onKeyDown(e, this.player, this.w)
-    );
-    window.addEventListener("keyup", (e) => this.onKeyUp(e, this.player));
-  }
+    window.addEventListener("keydown", (e) => {
+      this.keys[e.code] = true;
+    });
 
-  onKeyUp(e, player) {
-    if (e.code === "KeyW" || e.code === "KeyS") {
-      player.diry = 0;
+    window.addEventListener("keyup", (e) => {
+      this.keys[e.code] = false;
+    });
+
+    if (this.keys["KeyD"]) {
+      this.player.dirx = 1;
+    } else if (this.keys["KeyA"]) {
+      this.player.dirx = -1;
+    } else {
+      this.player.dirx = 0;
     }
 
-    if (e.code === "KeyA" || e.code === "KeyD") {
-      player.dirx = 0;
-    }
-  }
-
-  onKeyDown(e, player, w) {
-    if (e.code === "KeyW") {
-      player.diry = -1;
-    }
-    if (e.code === "KeyS") {
-      player.diry = 1;
-    }
-    if (e.code === "KeyD") {
-      player.dirx = 1;
-    }
-    if (e.code === "KeyA") {
-      player.dirx = -1;
+    if (this.keys["KeyW"]) {
+      this.player.diry = -1;
+    } else if (this.keys["KeyS"]) {
+      this.player.diry = 1;
+    } else {
+      this.player.diry = 0;
     }
   }
 
