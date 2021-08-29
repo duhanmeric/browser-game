@@ -65,7 +65,6 @@ function App() {
       );
       tempArr.push(projectile);
       setProjectiles(tempArr);
-      console.log(projectiles);
     });
 
     var game = new Game(
@@ -75,7 +74,8 @@ function App() {
       64,
       tiles,
       player.current,
-      projectiles
+      projectiles,
+      setProjectiles
     );
 
     player.current.game = game;

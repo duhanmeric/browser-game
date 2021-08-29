@@ -17,7 +17,7 @@ export default class Projectile {
       this.char_size
     );
 
-    this.fireX = this.fireX + this.velocity.x * 5;
-    this.fireY = this.fireY + this.velocity.y * 5;
+    this.fireX = this.fireX + this.velocity.x * 4;
+    this.fireY = this.fireY + this.velocity.y * 4;
   }
 }

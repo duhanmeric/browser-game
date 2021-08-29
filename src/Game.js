@@ -1,5 +1,14 @@
 export default class Game {
-  constructor(ctx, w, h, char_size, tiles, player, projectiles) {
+  constructor(
+    ctx,
+    w,
+    h,
+    char_size,
+    tiles,
+    player,
+    projectiles,
+    setProjectiles
+  ) {
     this.ctx = ctx;
     this.w = w;
     this.h = h;
@@ -10,6 +19,8 @@ export default class Game {
     this.player = player;
     this.keys = [];
     this.projectiles = projectiles;
+    this.setProjectiles = setProjectiles;
+    this.tempProjectiles = this.projectiles;
   }
 
   layers = [
@@ -83,7 +94,17 @@ export default class Game {
     this.player.draw();
 
     if (this.projectiles.length > 0) {
-      this.projectiles.forEach((p) => p.draw());
+      this.projectiles.forEach((p) => {
+        p.draw();
+      });
     }
+
+    // ekrandan cikan mermileri silme
+    this.projectiles.forEach((p, index) => {
+      if (p.fireX > this.w || p.fireX < 0 || p.fireY < 0 || p.fireY > this.h) {
+        this.tempProjectiles.splice(index, 1);
+        this.setProjectiles(this.tempProjectiles);
+      }
+    });
   }
 }
