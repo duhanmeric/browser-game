@@ -5,12 +5,12 @@ export default class Player {
     this.h = h;
     this.char_size = char_size;
     this.playerImg = playerImg;
-    this.x = 100;
-    this.y = 100;
+    this.x = this.w / 2;
+    this.y = this.h / 2;
     this.dirx = 0;
     this.diry = 0;
-    this.targetX = 100;
-    this.targetY = 100;
+    this.targetX = this.w / 2;
+    this.targetY = this.h / 2;
   }
 
   draw() {
@@ -27,7 +27,7 @@ export default class Player {
     var targetX = this.targetX + this.dirx * 3;
     var targetY = this.targetY + this.diry * 3;
 
-    if(!this.game.isSolidTile(targetX, targetY)) {
+    if (!this.game.isSolidTile(targetX, targetY)) {
       this.targetX = targetX;
       this.targetY = targetY;
       this.x = this.x + (this.targetX - this.x) * 0.4;

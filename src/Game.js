@@ -1,5 +1,5 @@
 export default class Game {
-  constructor(ctx, w, h, char_size, tiles, player) {
+  constructor(ctx, w, h, char_size, tiles, player, projectiles) {
     this.ctx = ctx;
     this.w = w;
     this.h = h;
@@ -9,6 +9,7 @@ export default class Game {
     this.tiles = tiles;
     this.player = player;
     this.keys = [];
+    this.projectiles = projectiles;
   }
 
   layers = [
@@ -80,5 +81,9 @@ export default class Game {
     }
 
     this.player.draw();
+
+    if (this.projectiles.length > 0) {
+      this.projectiles.forEach((p) => p.draw());
+    }
   }
 }

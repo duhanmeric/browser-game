@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Game from "./Game";
 import Player from "./Player";
+import Projectile from "./Projectile";
 import Ground from "./assets/ground.png";
 import Edges from "./assets/edges.png";
 import Wizard from "./assets/wizard.png";
+import Fire from "./assets/fire.png";
 
 const loadEnv = () => {
   let tempTiles = [Ground, Edges];
@@ -24,6 +26,7 @@ function App() {
   const GAME_HEIGHT = 512;
   let gameInt = useRef();
   const [tiles, setTiles] = useState(loadEnv);
+  const [projectiles, setProjectiles] = useState([]);
 
   var player = useRef();
 
@@ -31,9 +34,39 @@ function App() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
+    let tempArr = projectiles;
+
     let wizard = new Image();
     wizard.src = Wizard;
+
+    let fire = new Image();
+    fire.src = Fire;
+
     player.current = new Player(context, GAME_WIDTH, GAME_HEIGHT, 64, wizard);
+
+    canvas.addEventListener("click", (e) => {
+      const angle = Math.atan2(
+        e.offsetY - player.current.y,
+        e.offsetX - player.current.x
+      );
+
+      const velocity = {
+        x: Math.cos(angle),
+        y: Math.sin(angle),
+      };
+
+      let projectile = new Projectile(
+        context,
+        player.current.x + 16,
+        player.current.y + 16,
+        32,
+        fire,
+        velocity
+      );
+      tempArr.push(projectile);
+      setProjectiles(tempArr);
+      console.log(projectiles);
+    });
 
     var game = new Game(
       context,
@@ -41,7 +74,8 @@ function App() {
       GAME_HEIGHT,
       64,
       tiles,
-      player.current
+      player.current,
+      projectiles
     );
 
     player.current.game = game;
@@ -51,7 +85,7 @@ function App() {
       game.draw();
       game.update();
     }, 1000 / 60);
-  }, [tiles]);
+  }, [tiles, projectiles]);
 
   return (
     <div className="app">
