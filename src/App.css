@@ -21,3 +21,26 @@ body {
 #game {
   border: 1px solid white;
 }
+
+#login {
+  height: 50px;
+  width: 350px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#login input {
+  width: 75%;
+  height: 100%;
+  padding: 0 10px;
+  outline: none;
+  font-size: 20px;
+}
+
+#login #loginBtn {
+  width: 25%;
+  height: 100%;
+  font-size: 20px;
+}

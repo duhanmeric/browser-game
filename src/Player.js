@@ -1,5 +1,5 @@
 export default class Player {
-  constructor(ctx, w, h, char_size, playerImg) {
+  constructor(ctx, w, h, char_size, playerImg, username) {
     this.ctx = ctx;
     this.w = w;
     this.h = h;
@@ -11,6 +11,7 @@ export default class Player {
     this.diry = 0;
     this.targetX = this.w / 2;
     this.targetY = this.h / 2;
+    this.username = username;
   }
 
   draw() {
@@ -21,6 +22,11 @@ export default class Player {
       this.char_size,
       this.char_size
     );
+
+    this.ctx.font = "16px Arial";
+    this.ctx.textAlign = "center";
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText(this.username, this.x, this.y - 20);
   }
 
   update() {

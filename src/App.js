@@ -7,6 +7,7 @@ import Ground from "./assets/ground.png";
 import Edges from "./assets/edges.png";
 import Wizard from "./assets/wizard.png";
 import Fire from "./assets/fire.png";
+import Login from "./Login";
 
 const loadEnv = () => {
   let tempTiles = [Ground, Edges];
@@ -21,6 +22,9 @@ const loadEnv = () => {
 };
 
 function App() {
+  const [scene, setScene] = useState(0);
+  const [userName, setUserName] = useState("");
+
   const canvasRef = useRef();
   const GAME_WIDTH = 640;
   const GAME_HEIGHT = 512;
@@ -31,70 +35,87 @@ function App() {
   var player = useRef();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+    if (scene === 1) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
 
-    let tempArr = projectiles;
+      let tempArr = projectiles;
 
-    let wizard = new Image();
-    wizard.src = Wizard;
+      let wizard = new Image();
+      wizard.src = Wizard;
 
-    let fire = new Image();
-    fire.src = Fire;
+      let fire = new Image();
+      fire.src = Fire;
 
-    player.current = new Player(context, GAME_WIDTH, GAME_HEIGHT, 64, wizard);
-
-    canvas.addEventListener("click", (e) => {
-      const angle = Math.atan2(
-        e.offsetY - player.current.y,
-        e.offsetX - player.current.x
-      );
-
-      const velocity = {
-        x: Math.cos(angle),
-        y: Math.sin(angle),
-      };
-
-      let projectile = new Projectile(
+      player.current = new Player(
         context,
-        player.current.x + 16,
-        player.current.y + 16,
-        32,
-        fire,
-        velocity
+        GAME_WIDTH,
+        GAME_HEIGHT,
+        64,
+        wizard,
+        userName
       );
-      tempArr.push(projectile);
-      setProjectiles(tempArr);
-    });
 
-    var game = new Game(
-      context,
-      GAME_WIDTH,
-      GAME_HEIGHT,
-      64,
-      tiles,
-      player.current,
-      projectiles,
-      setProjectiles
-    );
+      canvas.addEventListener("click", (e) => {
+        const angle = Math.atan2(
+          e.offsetY - player.current.y,
+          e.offsetX - player.current.x
+        );
 
-    player.current.game = game;
+        const velocity = {
+          x: Math.cos(angle),
+          y: Math.sin(angle),
+        };
 
-    gameInt.current = setInterval(() => {
-      game.init();
-      game.draw();
-      game.update();
-    }, 1000 / 60);
-  }, [tiles, projectiles]);
+        let projectile = new Projectile(
+          context,
+          player.current.x + 16,
+          player.current.y + 16,
+          32,
+          fire,
+          velocity
+        );
+        tempArr.push(projectile);
+        setProjectiles(tempArr);
+      });
+
+      var game = new Game(
+        context,
+        GAME_WIDTH,
+        GAME_HEIGHT,
+        64,
+        tiles,
+        player.current,
+        projectiles,
+        setProjectiles
+      );
+
+      player.current.game = game;
+
+      gameInt.current = setInterval(() => {
+        game.init();
+        game.draw();
+        game.update();
+      }, 1000 / 60);
+    }
+  }, [tiles, projectiles, scene, userName]);
 
   return (
     <div className="app">
-      <canvas
-        id="game"
-        ref={canvasRef}
-        width={GAME_WIDTH}
-        height={GAME_HEIGHT}
-      ></canvas>
+      {scene === 0 ? (
+        <Login
+          userName={userName}
+          setUserName={setUserName}
+          setScene={setScene}
+        ></Login>
+      ) : (
+        <canvas
+          id="game"
+          ref={canvasRef}
+          width={GAME_WIDTH}
+          height={GAME_HEIGHT}
+        ></canvas>
+      )}
     </div>
   );
 }
