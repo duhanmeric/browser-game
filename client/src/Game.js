@@ -75,8 +75,8 @@ export default class Game {
       const newHpPotions = [];
       for (let i = 0; i < hpPotions.length; i++) {
         const newHpPotion = new Hp(ctx, this.TILE_WIDTH / 4, this.hpImg);
-        newHpPotion.x = hpPotions[i].x + this.TILE_WIDTH / 4;
-        newHpPotion.y = hpPotions[i].y + this.TILE_WIDTH / 4;
+        newHpPotion.x = hpPotions[i].x;
+        newHpPotion.y = hpPotions[i].y;
         newHpPotions.push(newHpPotion);
       }
       this.hpPotions = newHpPotions;

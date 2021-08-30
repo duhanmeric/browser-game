@@ -17,7 +17,7 @@ var Player = function (game, id) {
   this.game = game;
   this.id = id;
   this.x = Math.floor(Math.random() * (520 - 100)) + 100;
-  this.y = Math.floor(Math.random() * (448 - 100)) + 100;
+  this.y = Math.floor(Math.random() * (400 - 100)) + 100;
   this.dirx = 0;
   this.diry = 0;
   this.targetX = this.x;
@@ -44,9 +44,11 @@ Player.prototype.update = function update() {
 };
 
 var HpPotions = function HpPotions() {
-  this.x = Math.floor(Math.random() * (640 - 128) + 50);
-  this.y = Math.floor(Math.random() * (512 - 128) + 40);
   this.width = 16;
+  this.x = Math.floor(Math.random() * (560 - 48)) + 48 + this.width;
+  this.y = Math.floor(Math.random() * (432 - 48)) + 48 + this.width;
+  this.collected = false;
+  this.power = 20;
 };
 
 var Projectile = function Projectile(player, velocity) {
@@ -148,7 +150,7 @@ Game.prototype.update = function update() {
             this.projectiles[j].fireY + this.projectiles[j].width &&
           player.y + this.projectiles[j].width > this.projectiles[j].fireY
         ) {
-          this.players[i].health -= 5;
+          player.health -= 5;
           this.projectiles.splice(this.projectiles[j], 1);
         }
       }
@@ -156,25 +158,28 @@ Game.prototype.update = function update() {
   }
 
   for (let i = 0; i < this.players.length; i++) {
+    const player = this.players[i];
     for (let j = 0; j < this.hpPotions.length; j++) {
       if (
-        this.hpPotions[j].x + 32 < this.players[i].x + this.players[i].width &&
-        this.hpPotions[j].x + this.hpPotions[j].width > this.players[i].x &&
-        this.hpPotions[j].y + 32 < this.players[i].y + this.players[i].width &&
-        this.hpPotions[j].y + this.hpPotions[j].width > this.players[i].y
+        player.x + 24 < this.hpPotions[j].x + this.hpPotions[j].width &&
+        player.x + player.width > this.hpPotions[j].x + 24 &&
+        player.y + 16 < this.hpPotions[j].y + this.hpPotions[j].width &&
+        player.y + player.width > this.hpPotions[j].y + 16
       ) {
-        if (this.players[i].health + 50 < 100) {
-          this.players[i].health += 50;
+        if (player.health + this.hpPotions[j].power <= 100) {
+          player.health += this.hpPotions[j].power;
         } else {
-          this.players[i].health = 100;
+          player.health = 100;
         }
+        this.hpPotions[j].collected = true;
+        this.hpPotions = this.hpPotions.filter((p) => !p.collected);
       }
     }
   }
 
   const now = Date.now();
-  if (now - this.lastPotionCreated > 3000) {
-    // this.addHpPotions();
+  if (now - this.lastPotionCreated > 7000) {
+    this.addHpPotions();
     this.lastPotionCreated = Date.now();
   }
 };
