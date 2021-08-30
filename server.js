@@ -24,6 +24,7 @@ var Player = function (game, id) {
   this.targetY = 100;
   this.name = "";
   this.health = 100;
+  this.width = 32;
 };
 
 Player.prototype.update = function update() {
@@ -43,6 +44,7 @@ var Projectile = function Projectile(player, velocity) {
   this.fireX = player.x;
   this.fireY = player.y;
   this.velocity = velocity;
+  this.width = 16;
 };
 
 Projectile.prototype.update = function update() {
@@ -90,6 +92,25 @@ Game.prototype.update = function update() {
   for (let i = 0; i < this.projectiles.length; i++) {
     const projectile = this.projectiles[i];
     projectile.update();
+  }
+
+  for (let i = 0; i < this.players.length; i++) {
+    for (let j = 0; j < this.projectiles.length; j++) {
+      if (this.players[i].id !== this.projectiles[j].id) {
+        if (
+          this.projectiles[j].fireX <
+            this.players[i].x + this.players[i].width &&
+          this.projectiles[j].fireX + this.projectiles[j].width >
+            this.players[i].x &&
+          this.projectiles[j].fireY <
+            this.players[i].y + this.players[i].width / 2 &&
+          this.projectiles[j].fireY + this.projectiles[j].width >
+            this.players[i].y
+        ) {
+          this.players[i].health -= 0.4;
+        }
+      }
+    }
   }
 };
 

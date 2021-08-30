@@ -1,7 +1,7 @@
 export default class Projectile {
-  constructor(ctx, char_size, fireImg) {
+  constructor(ctx, TILE_WIDTH, fireImg) {
     this.ctx = ctx;
-    this.char_size = char_size;
+    this.TILE_WIDTH = TILE_WIDTH;
     this.fireImg = fireImg;
   }
 
@@ -10,8 +10,8 @@ export default class Projectile {
       this.fireImg,
       this.fireX - 32,
       this.fireY - 32,
-      this.char_size,
-      this.char_size
+      this.TILE_WIDTH,
+      this.TILE_WIDTH
     );
   }
 }
