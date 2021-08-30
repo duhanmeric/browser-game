@@ -16,15 +16,15 @@ app.get("/", (req, res) => {
 var Player = function (game, id) {
   this.game = game;
   this.id = id;
-  this.x = Math.floor(Math.random() * 400 + 100);
-  this.y = Math.floor(Math.random() * 350 + 100);
+  this.x = Math.floor(Math.random() * (520 - 100)) + 100;
+  this.y = Math.floor(Math.random() * (448 - 100)) + 100;
   this.dirx = 0;
   this.diry = 0;
   this.targetX = this.x;
   this.targetY = this.y;
   this.name = "";
   this.health = 100;
-  this.width = 32;
+  this.width = 64;
   this.isDead = false;
 };
 
@@ -46,14 +46,15 @@ Player.prototype.update = function update() {
 var HpPotions = function HpPotions() {
   this.x = Math.floor(Math.random() * (640 - 128) + 50);
   this.y = Math.floor(Math.random() * (512 - 128) + 40);
+  this.width = 16;
 };
 
 var Projectile = function Projectile(player, velocity) {
   this.id = player.id;
-  this.fireX = player.x;
-  this.fireY = player.y;
+  this.width = 32;
+  this.fireX = player.x + this.width / 2;
+  this.fireY = player.y + this.width / 2;
   this.velocity = velocity;
-  this.width = 16;
 };
 
 Projectile.prototype.update = function update() {
@@ -96,8 +97,8 @@ Game.prototype.addHpPotions = function addHpPotions() {
 };
 
 Game.prototype.isSolidTile = function isSolidTile(x, y) {
-  const startTileX = Math.floor(y / 64);
-  const startTileY = Math.floor(x / 64);
+  const startTileX = Math.floor((y + 32) / 64);
+  const startTileY = Math.floor((x + 32) / 64);
   return this.layers[0][startTileX][startTileY] === 1;
 };
 
@@ -136,20 +137,16 @@ Game.prototype.update = function update() {
   }
 
   for (let i = 0; i < this.players.length; i++) {
+    const player = this.players[i];
     for (let j = 0; j < this.projectiles.length; j++) {
-      if (
-        this.players[i].id !== undefined &&
-        this.players[i].id !== this.projectiles[j].id
-      ) {
+      if (player.id !== undefined && player.id !== this.projectiles[j].id) {
         if (
-          this.projectiles[j].fireX <
-            this.players[i].x + this.players[i].width &&
-          this.projectiles[j].fireX + this.projectiles[j].width >
-            this.players[i].x &&
-          this.projectiles[j].fireY <
-            this.players[i].y + this.players[i].width / 2 &&
-          this.projectiles[j].fireY + this.projectiles[j].width >
-            this.players[i].y
+          player.x + 32 <
+            this.projectiles[j].fireX + this.projectiles[j].width &&
+          player.x + this.projectiles[j].width > this.projectiles[j].fireX &&
+          player.y + 32 <
+            this.projectiles[j].fireY + this.projectiles[j].width &&
+          player.y + this.projectiles[j].width > this.projectiles[j].fireY
         ) {
           this.players[i].health -= 0.4;
         }
@@ -157,9 +154,26 @@ Game.prototype.update = function update() {
     }
   }
 
+  for (let i = 0; i < this.players.length; i++) {
+    for (let j = 0; j < this.hpPotions.length; j++) {
+      if (
+        this.hpPotions[j].x + 32 < this.players[i].x + this.players[i].width &&
+        this.hpPotions[j].x + this.hpPotions[j].width > this.players[i].x &&
+        this.hpPotions[j].y + 32 < this.players[i].y + this.players[i].width &&
+        this.hpPotions[j].y + this.hpPotions[j].width > this.players[i].y
+      ) {
+        if (this.players[i].health + 50 < 100) {
+          this.players[i].health += 50;
+        } else {
+          this.players[i].health = 100;
+        }
+      }
+    }
+  }
+
   const now = Date.now();
   if (now - this.lastPotionCreated > 3000) {
-    this.addHpPotions();
+    // this.addHpPotions();
     this.lastPotionCreated = Date.now();
   }
 };
@@ -251,7 +265,7 @@ io.on("connection", (socket) => {
   socket.on("PLAYER_FIRE", function (y, x) {
     const player = game.players.filter((player) => player.id === socket.id);
     if (player[0] && !player[0].isDead) {
-      let angle = Math.atan2(y - player[0].y, x - player[0].x);
+      let angle = Math.atan2(y - (player[0].y + 32), x - (player[0].x + 32));
       let velocity = {
         x: Math.cos(angle),
         y: Math.sin(angle),

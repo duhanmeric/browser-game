@@ -8,8 +8,8 @@ export default class Projectile {
   draw() {
     this.ctx.drawImage(
       this.fireImg,
-      this.fireX - 32,
-      this.fireY - 32,
+      this.fireX,
+      this.fireY,
       this.TILE_WIDTH,
       this.TILE_WIDTH
     );

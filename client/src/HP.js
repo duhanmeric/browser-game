@@ -8,8 +8,8 @@ export default class Hp {
   draw() {
     this.ctx.drawImage(
       this.hpImg,
-      this.x,
-      this.y,
+      this.x - this.TILE_WIDTH / 2,
+      this.y - this.TILE_WIDTH / 2,
       this.TILE_WIDTH,
       this.TILE_WIDTH
     );

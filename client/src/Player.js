@@ -16,23 +16,23 @@ export default class Player {
     if (!this.isDead) {
       this.ctx.drawImage(
         this.playerImg,
-        this.x - this.TILE_WIDTH / 2,
-        this.y - this.TILE_WIDTH / 2,
+        this.x,
+        this.y,
         this.TILE_WIDTH,
         this.TILE_WIDTH
       );
 
-      this.ctx.font = "16px Arial";
-      this.ctx.textAlign = "center";
-      this.ctx.fillStyle = "white";
-      this.ctx.fillText(this.name, this.x, this.y - 25);
+      // this.ctx.font = "16px Arial";
+      // this.ctx.textAlign = "center";
+      // this.ctx.fillStyle = "white";
+      // this.ctx.fillText(this.name, this.x + this.TILE_WIDTH / 2, this.y + 6);
 
       this.ctx.fillStyle = "red";
       this.ctx.fillRect(
-        this.x - this.TILE_WIDTH / 4,
-        this.y + this.TILE_WIDTH / 4,
+        this.x + this.TILE_WIDTH / 4,
+        this.y + this.TILE_WIDTH - 14,
         (this.TILE_WIDTH / 2) * (this.health / 100),
-        10
+        12
       );
     }
   }

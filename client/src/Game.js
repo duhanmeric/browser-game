@@ -64,8 +64,8 @@ export default class Game {
           this.fireImg
         );
         newProjectile.id = projectiles[i].id;
-        newProjectile.fireX = projectiles[i].fireX + this.TILE_WIDTH / 4;
-        newProjectile.fireY = projectiles[i].fireY + this.TILE_WIDTH / 4;
+        newProjectile.fireX = projectiles[i].fireX;
+        newProjectile.fireY = projectiles[i].fireY;
         newProjectiles.push(newProjectile);
       }
       this.projectiles = newProjectiles;
