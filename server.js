@@ -43,6 +43,11 @@ Player.prototype.update = function update() {
   }
 };
 
+var HpPotions = function HpPotions() {
+  this.x = Math.floor(Math.random() * (640 - 128) + 50);
+  this.y = Math.floor(Math.random() * (512 - 128) + 40);
+};
+
 var Projectile = function Projectile(player, velocity) {
   this.id = player.id;
   this.fireX = player.x;
@@ -59,6 +64,7 @@ Projectile.prototype.update = function update() {
 var Game = function Game() {
   this.players = [];
   this.projectiles = [];
+  this.hpPotions = [];
   this.layers = [
     [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -73,8 +79,8 @@ var Game = function Game() {
   ];
   this.gameOver = false;
   this.winnerId = null;
-  this.isStarted = false;
   this.endedAt = null;
+  this.lastPotionCreated = Date.now();
 };
 
 Game.prototype.addPlayer = function addPlayer(id) {
@@ -83,6 +89,10 @@ Game.prototype.addPlayer = function addPlayer(id) {
 
 Game.prototype.addProjectile = function addProjectile(player, velocity) {
   this.projectiles.push(new Projectile(player, velocity));
+};
+
+Game.prototype.addHpPotions = function addHpPotions() {
+  this.hpPotions.push(new HpPotions());
 };
 
 Game.prototype.isSolidTile = function isSolidTile(x, y) {
@@ -94,6 +104,7 @@ Game.prototype.isSolidTile = function isSolidTile(x, y) {
 Game.prototype.reset = function reset() {
   this.players = [];
   this.projectiles = [];
+  this.hpPotions = [];
   this.gameOver = false;
   this.winnerId = null;
 };
@@ -145,6 +156,12 @@ Game.prototype.update = function update() {
       }
     }
   }
+
+  const now = Date.now();
+  if (now - this.lastPotionCreated > 3000) {
+    this.addHpPotions();
+    this.lastPotionCreated = Date.now();
+  }
 };
 
 var game = new Game();
@@ -172,6 +189,14 @@ const updateInterval = setInterval(() => {
       id: projectile.id,
       fireX: projectile.fireX,
       fireY: projectile.fireY,
+    }))
+  );
+
+  io.sockets.emit(
+    "HP_POTION_UPDATE",
+    game.hpPotions.map((hp) => ({
+      x: hp.x,
+      y: hp.y,
     }))
   );
 

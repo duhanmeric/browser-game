@@ -1,3 +1,4 @@
+import Hp from "./HP";
 import Player from "./Player";
 import Projectile from "./Projectile";
 
@@ -11,6 +12,7 @@ export default class Game {
     socket,
     playerImg,
     fireImg,
+    hpImg,
     username
   ) {
     this.ctx = ctx;
@@ -24,8 +26,10 @@ export default class Game {
     this.players = [];
     this.layers = [];
     this.projectiles = [];
+    this.hpPotions = [];
     this.playerImg = playerImg;
     this.fireImg = fireImg;
+    this.hpImg = hpImg;
     this.username = username;
     this.socket = socket;
 
@@ -65,6 +69,17 @@ export default class Game {
         newProjectiles.push(newProjectile);
       }
       this.projectiles = newProjectiles;
+    });
+
+    socket.on("HP_POTION_UPDATE", (hpPotions) => {
+      const newHpPotions = [];
+      for (let i = 0; i < hpPotions.length; i++) {
+        const newHpPotion = new Hp(ctx, this.TILE_WIDTH / 4, this.hpImg);
+        newHpPotion.x = hpPotions[i].x + this.TILE_WIDTH / 4;
+        newHpPotion.y = hpPotions[i].y + this.TILE_WIDTH / 4;
+        newHpPotions.push(newHpPotion);
+      }
+      this.hpPotions = newHpPotions;
     });
 
     socket.on("GAME_STATE_UPDATE", (state) => {
@@ -140,6 +155,12 @@ export default class Game {
     if (this.projectiles.length > 0) {
       this.projectiles.forEach((p) => {
         p.draw();
+      });
+    }
+
+    if (this.hpPotions.length > 0) {
+      this.hpPotions.forEach((h) => {
+        h.draw();
       });
     }
 

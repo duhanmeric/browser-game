@@ -5,6 +5,7 @@ import Ground from "./assets/ground.png";
 import Edges from "./assets/edges.png";
 import Wizard from "./assets/wizard.png";
 import Fire from "./assets/fire.png";
+import HP from "./assets/hp_potion.png";
 import Login from "./Login";
 import { io } from "socket.io-client";
 
@@ -51,6 +52,9 @@ function App() {
       let fire = new Image();
       fire.src = Fire;
 
+      let hp = new Image();
+      hp.src = HP;
+
       var game = new Game(
         context,
         GAME_WIDTH,
@@ -60,6 +64,7 @@ function App() {
         socket,
         wizard,
         fire,
+        hp,
         userName
       );
 
