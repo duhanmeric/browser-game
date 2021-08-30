@@ -148,7 +148,8 @@ Game.prototype.update = function update() {
             this.projectiles[j].fireY + this.projectiles[j].width &&
           player.y + this.projectiles[j].width > this.projectiles[j].fireY
         ) {
-          this.players[i].health -= 0.4;
+          this.players[i].health -= 5;
+          this.projectiles.splice(this.projectiles[j], 1);
         }
       }
     }

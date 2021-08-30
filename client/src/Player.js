@@ -22,10 +22,10 @@ export default class Player {
         this.TILE_WIDTH
       );
 
-      // this.ctx.font = "16px Arial";
-      // this.ctx.textAlign = "center";
-      // this.ctx.fillStyle = "white";
-      // this.ctx.fillText(this.name, this.x + this.TILE_WIDTH / 2, this.y + 6);
+      this.ctx.font = "16px Arial";
+      this.ctx.textAlign = "center";
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(this.name, this.x + this.TILE_WIDTH / 2, this.y + 6);
 
       this.ctx.fillStyle = "red";
       this.ctx.fillRect(
