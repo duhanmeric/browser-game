@@ -35,6 +35,11 @@ function App() {
   useEffect(() => {
     if (scene === 1) {
       var socket = io("http://localhost:5000");
+      socket.on("disconnect", () => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      });
       socket.emit("PLAYER_NAME_UPDATE", { name: userName });
 
       const canvas = canvasRef.current;
@@ -65,7 +70,6 @@ function App() {
       gameInt.current = setInterval(() => {
         game.init();
         game.draw();
-        game.update();
       }, FPS);
     }
   }, [tiles, scene, userName, FPS]);

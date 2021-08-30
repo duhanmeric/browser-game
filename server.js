@@ -16,15 +16,16 @@ app.get("/", (req, res) => {
 var Player = function (game, id) {
   this.game = game;
   this.id = id;
-  this.x = 100;
-  this.y = 100;
+  this.x = Math.floor(Math.random() * 400 + 100);
+  this.y = Math.floor(Math.random() * 350 + 100);
   this.dirx = 0;
   this.diry = 0;
-  this.targetX = 100;
-  this.targetY = 100;
+  this.targetX = this.x;
+  this.targetY = this.y;
   this.name = "";
   this.health = 100;
   this.width = 32;
+  this.isDead = false;
 };
 
 Player.prototype.update = function update() {
@@ -70,6 +71,10 @@ var Game = function Game() {
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
   ];
+  this.gameOver = false;
+  this.winnerId = null;
+  this.isStarted = false;
+  this.endedAt = null;
 };
 
 Game.prototype.addPlayer = function addPlayer(id) {
@@ -86,10 +91,32 @@ Game.prototype.isSolidTile = function isSolidTile(x, y) {
   return this.layers[0][startTileX][startTileY] === 1;
 };
 
+Game.prototype.reset = function reset() {
+  this.players = [];
+  this.projectiles = [];
+  this.gameOver = false;
+  this.winnerId = null;
+};
+
 Game.prototype.update = function update() {
+  const alivePlayerCount = this.players.filter(
+    (player) => !player.isDead
+  ).length;
+
+  const allPlayersCount = this.players.length;
+
   for (let i = 0; i < this.players.length; i++) {
     const player = this.players[i];
-    player.update();
+
+    if (alivePlayerCount === 1 && !player.isDead && allPlayersCount != 1) {
+      this.winnerId = player.id;
+      this.gameOver = true;
+      this.endedAt = Date.now();
+    }
+
+    if (!this.gameOver) {
+      player.update();
+    }
   }
 
   for (let i = 0; i < this.projectiles.length; i++) {
@@ -147,12 +174,28 @@ const updateInterval = setInterval(() => {
       fireY: projectile.fireY,
     }))
   );
+
+  if (game.gameOver) {
+    io.sockets.emit("GAME_STATE_UPDATE", {
+      gameOver: game.gameOver,
+      winnerId: game.winnerId,
+    });
+  }
 }, 1000 / 60);
 
 io.on("connection", (socket) => {
   console.log("user connected " + socket.id);
   game.addPlayer(socket.id);
   console.log("number of players " + game.players.length);
+
+  setInterval(() => {
+    if (game.gameOver) {
+      socket.disconnect(true);
+      if (Date.now() - game.endedAt > 1000) {
+        game.reset();
+      }
+    }
+  }, 1000 / 60);
 
   socket.emit("LAYERS_UPDATE", game.layers);
 
@@ -167,18 +210,22 @@ io.on("connection", (socket) => {
 
   socket.on("PLAYER_DIRECTION_UPDATE", function (data) {
     const player = game.players.filter((player) => player.id === socket.id);
-    if (data.dirx !== undefined) player[0].dirx = data.dirx;
-    if (data.diry !== undefined) player[0].diry = data.diry;
+    if (player[0] && !player[0].isDead) {
+      if (data.dirx !== undefined) player[0].dirx = data.dirx;
+      if (data.diry !== undefined) player[0].diry = data.diry;
+    }
   });
 
   socket.on("PLAYER_NAME_UPDATE", function (data) {
     const player = game.players.filter((player) => player.id === socket.id);
-    player[0].name = data.name;
+    if (player[0]) {
+      player[0].name = data.name;
+    }
   });
 
   socket.on("PLAYER_FIRE", function (y, x) {
     const player = game.players.filter((player) => player.id === socket.id);
-    if (!player[0].isDead) {
+    if (player[0] && !player[0].isDead) {
       let angle = Math.atan2(y - player[0].y, x - player[0].x);
       let velocity = {
         x: Math.cos(angle),

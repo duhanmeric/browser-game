@@ -67,11 +67,15 @@ export default class Game {
       this.projectiles = newProjectiles;
     });
 
+    socket.on("GAME_STATE_UPDATE", (state) => {
+      this.gameOver = state.gameOver;
+      this.winnerId = state.winnerId;
+    });
+
     socket.on("LAYERS_UPDATE", (layers) => {
       this.layers = layers;
     });
   }
-  update() {}
 
   init() {
     window.addEventListener("keydown", (e) => {
@@ -100,6 +104,16 @@ export default class Game {
   }
 
   draw() {
+    if (this.gameOver) {
+      const winner = this.players.find((player) => player.id === this.winnerId);
+      this.ctx.font = "normal 42px Arial";
+      this.ctx.textAlign = "center";
+      this.ctx.fillStyle = "white";
+      if (winner) {
+        this.ctx.fillText(`KAZANAN ${winner.name}`, this.w / 2, this.h / 2);
+      }
+      return;
+    }
     this.ctx.clearRect(0, 0, this.w, this.h);
 
     for (let i = 0; i < this.layers.length; i++) {
