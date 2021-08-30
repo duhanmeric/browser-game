@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Game from "./Game";
-import Projectile from "./Projectile";
 import Ground from "./assets/ground.png";
 import Edges from "./assets/edges.png";
 import Wizard from "./assets/wizard.png";
@@ -28,6 +27,8 @@ function App() {
   const canvasRef = useRef();
   const GAME_WIDTH = 640;
   const GAME_HEIGHT = 512;
+  const FPS = 1000 / 60;
+  const TILE_WIDTH = 64;
   let gameInt = useRef();
   const [tiles, setTiles] = useState(loadEnv);
 
@@ -49,7 +50,7 @@ function App() {
         context,
         GAME_WIDTH,
         GAME_HEIGHT,
-        64,
+        TILE_WIDTH,
         tiles,
         socket,
         wizard,
@@ -58,15 +59,6 @@ function App() {
       );
 
       canvas.addEventListener("click", (e) => {
-        var velocity;
-        // game.players.forEach((player) => {
-        //   const angle = Math.atan2(e.offsetY - player.y, e.offsetX - player.x);
-        //   velocity = {
-        //     x: Math.cos(angle),
-        //     y: Math.sin(angle),
-        //   };
-        //   console.log(player);
-        // });
         socket.emit("PLAYER_FIRE", e.offsetY, e.offsetX);
       });
 
@@ -74,9 +66,9 @@ function App() {
         game.init();
         game.draw();
         game.update();
-      }, 1000 / 60);
+      }, FPS);
     }
-  }, [tiles, scene, userName]);
+  }, [tiles, scene, userName, FPS]);
 
   return (
     <div className="app">

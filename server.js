@@ -23,6 +23,7 @@ var Player = function (game, id) {
   this.targetX = 100;
   this.targetY = 100;
   this.name = "";
+  this.health = 100;
 };
 
 Player.prototype.update = function update() {
@@ -106,6 +107,7 @@ const updateInterval = setInterval(() => {
       name: player.name,
       x: player.x,
       y: player.y,
+      health: player.health,
     }))
   );
 
@@ -115,7 +117,6 @@ const updateInterval = setInterval(() => {
       id: projectile.id,
       fireX: projectile.fireX,
       fireY: projectile.fireY,
-      // velocity: projectile.velocity,
     }))
   );
 }, 1000 / 60);

@@ -1,27 +1,36 @@
 export default class Player {
-  constructor(ctx, w, h, char_size, playerImg, fireImg) {
+  constructor(ctx, w, h, TILE_WIDTH, playerImg, fireImg) {
     this.ctx = ctx;
     this.w = w;
     this.h = h;
-    this.char_size = char_size;
+    this.TILE_WIDTH = TILE_WIDTH;
     this.playerImg = playerImg;
     this.fireImg = fireImg;
     this.id = 0;
     this.name = "";
+    this.health = 0; // server override
   }
 
   draw() {
     this.ctx.drawImage(
       this.playerImg,
-      this.x - 32,
-      this.y - 32,
-      this.char_size,
-      this.char_size
+      this.x - this.TILE_WIDTH / 2,
+      this.y - this.TILE_WIDTH / 2,
+      this.TILE_WIDTH,
+      this.TILE_WIDTH
     );
 
     this.ctx.font = "16px Arial";
     this.ctx.textAlign = "center";
     this.ctx.fillStyle = "white";
     this.ctx.fillText(this.name, this.x, this.y - 25);
+
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(
+      this.x - this.TILE_WIDTH / 4,
+      this.y + this.TILE_WIDTH / 4,
+      (this.TILE_WIDTH / 2) * (this.health / 100),
+      10
+    );
   }
 }

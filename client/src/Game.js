@@ -6,7 +6,7 @@ export default class Game {
     ctx,
     w,
     h,
-    char_size,
+    TILE_WIDTH,
     tiles,
     socket,
     playerImg,
@@ -16,9 +16,9 @@ export default class Game {
     this.ctx = ctx;
     this.w = w;
     this.h = h;
-    this.char_size = char_size;
-    this.ROWS = this.h / this.char_size;
-    this.COLS = this.w / this.char_size;
+    this.TILE_WIDTH = TILE_WIDTH;
+    this.ROWS = this.h / this.TILE_WIDTH;
+    this.COLS = this.w / this.TILE_WIDTH;
     this.tiles = tiles;
     this.keys = [];
     this.players = [];
@@ -36,7 +36,7 @@ export default class Game {
           ctx,
           this.w,
           this.h,
-          64,
+          this.TILE_WIDTH,
           this.playerImg,
           this.fireImg
         );
@@ -44,6 +44,7 @@ export default class Game {
         newPlayer.name = players[i].name;
         newPlayer.x = players[i].x;
         newPlayer.y = players[i].y;
+        newPlayer.health = players[i].health;
         newPlayers.push(newPlayer);
       }
       this.players = newPlayers;
@@ -52,10 +53,14 @@ export default class Game {
     socket.on("FIRE_UPDATE", (projectiles) => {
       const newProjectiles = [];
       for (let i = 0; i < projectiles.length; i++) {
-        const newProjectile = new Projectile(ctx, 32, this.fireImg);
+        const newProjectile = new Projectile(
+          ctx,
+          this.TILE_WIDTH / 2,
+          this.fireImg
+        );
         newProjectile.id = projectiles[i].id;
-        newProjectile.fireX = projectiles[i].fireX + 16;
-        newProjectile.fireY = projectiles[i].fireY + 16;
+        newProjectile.fireX = projectiles[i].fireX + this.TILE_WIDTH / 4;
+        newProjectile.fireY = projectiles[i].fireY + this.TILE_WIDTH / 4;
         newProjectiles.push(newProjectile);
       }
       this.projectiles = newProjectiles;
@@ -104,10 +109,10 @@ export default class Game {
           const imageType = layer[j][k];
           this.ctx.drawImage(
             this.tiles[imageType],
-            k * this.char_size,
-            j * this.char_size,
-            this.char_size,
-            this.char_size
+            k * this.TILE_WIDTH,
+            j * this.TILE_WIDTH,
+            this.TILE_WIDTH,
+            this.TILE_WIDTH
           );
         }
       }
