@@ -9,28 +9,31 @@ export default class Player {
     this.id = 0;
     this.name = "";
     this.health = 0; // server override
+    this.isDead = false; // server override
   }
 
   draw() {
-    this.ctx.drawImage(
-      this.playerImg,
-      this.x - this.TILE_WIDTH / 2,
-      this.y - this.TILE_WIDTH / 2,
-      this.TILE_WIDTH,
-      this.TILE_WIDTH
-    );
+    if (!this.isDead) {
+      this.ctx.drawImage(
+        this.playerImg,
+        this.x - this.TILE_WIDTH / 2,
+        this.y - this.TILE_WIDTH / 2,
+        this.TILE_WIDTH,
+        this.TILE_WIDTH
+      );
 
-    this.ctx.font = "16px Arial";
-    this.ctx.textAlign = "center";
-    this.ctx.fillStyle = "white";
-    this.ctx.fillText(this.name, this.x, this.y - 25);
+      this.ctx.font = "16px Arial";
+      this.ctx.textAlign = "center";
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(this.name, this.x, this.y - 25);
 
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(
-      this.x - this.TILE_WIDTH / 4,
-      this.y + this.TILE_WIDTH / 4,
-      (this.TILE_WIDTH / 2) * (this.health / 100),
-      10
-    );
+      this.ctx.fillStyle = "red";
+      this.ctx.fillRect(
+        this.x - this.TILE_WIDTH / 4,
+        this.y + this.TILE_WIDTH / 4,
+        (this.TILE_WIDTH / 2) * (this.health / 100),
+        10
+      );
+    }
   }
 }

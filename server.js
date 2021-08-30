@@ -28,6 +28,9 @@ var Player = function (game, id) {
 };
 
 Player.prototype.update = function update() {
+  if (this.health < 0) {
+    this.isDead = true;
+  }
   var targetX = this.targetX + this.dirx * 3;
   var targetY = this.targetY + this.diry * 3;
 
@@ -96,7 +99,10 @@ Game.prototype.update = function update() {
 
   for (let i = 0; i < this.players.length; i++) {
     for (let j = 0; j < this.projectiles.length; j++) {
-      if (this.players[i].id !== this.projectiles[j].id) {
+      if (
+        this.players[i].id !== undefined &&
+        this.players[i].id !== this.projectiles[j].id
+      ) {
         if (
           this.projectiles[j].fireX <
             this.players[i].x + this.players[i].width &&
@@ -129,6 +135,7 @@ const updateInterval = setInterval(() => {
       x: player.x,
       y: player.y,
       health: player.health,
+      isDead: player.isDead,
     }))
   );
 
@@ -171,12 +178,14 @@ io.on("connection", (socket) => {
 
   socket.on("PLAYER_FIRE", function (y, x) {
     const player = game.players.filter((player) => player.id === socket.id);
-    let angle = Math.atan2(y - player[0].y, x - player[0].x);
-    let velocity = {
-      x: Math.cos(angle),
-      y: Math.sin(angle),
-    };
-    game.addProjectile(player[0], velocity);
+    if (!player[0].isDead) {
+      let angle = Math.atan2(y - player[0].y, x - player[0].x);
+      let velocity = {
+        x: Math.cos(angle),
+        y: Math.sin(angle),
+      };
+      game.addProjectile(player[0], velocity);
+    }
   });
 
   socket.on("DELETE_PROJECTILE", function (data) {

@@ -45,6 +45,7 @@ export default class Game {
         newPlayer.x = players[i].x;
         newPlayer.y = players[i].y;
         newPlayer.health = players[i].health;
+        newPlayer.isDead = players[i].isDead;
         newPlayers.push(newPlayer);
       }
       this.players = newPlayers;
@@ -70,7 +71,6 @@ export default class Game {
       this.layers = layers;
     });
   }
-
   update() {}
 
   init() {
