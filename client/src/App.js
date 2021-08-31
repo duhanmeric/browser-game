@@ -35,7 +35,7 @@ function App() {
 
   useEffect(() => {
     if (scene === 1) {
-      var socket = io("http://localhost:5000");
+      var socket = io("https://cerezroyale.herokuapp.com/");
       socket.on("disconnect", () => {
         setTimeout(() => {
           window.location.reload();
