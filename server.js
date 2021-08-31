@@ -237,7 +237,7 @@ io.on("connection", (socket) => {
   setInterval(() => {
     if (game.gameOver) {
       socket.disconnect(true);
-      if (Date.now() - game.endedAt > 5000) {
+      if (Date.now() - game.endedAt > 1000) {
         game.reset();
       }
     }
@@ -278,7 +278,7 @@ io.on("connection", (socket) => {
         x: Math.cos(angle),
         y: Math.sin(angle),
       };
-      if (now - game.lastProjectileCreated > 250) {
+      if (now - game.lastProjectileCreated > 150) {
         game.addProjectile(player[0], velocity);
         game.lastProjectileCreated = Date.now();
       }
