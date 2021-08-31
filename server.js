@@ -10,10 +10,10 @@ const io = require("socket.io")(server, {
   },
 });
 
-app.use(express.static(path.join(__dirname, "client/build/index.html")));
+app.use(express.static(path.join(__dirname, "client/build")));
 
 app.get("/", (req, res) => {
-  res.send("Hello World! asdasd");
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
 var Player = function (game, id) {
