@@ -122,7 +122,7 @@ Game.prototype.update = function update() {
   for (let i = 0; i < this.players.length; i++) {
     const player = this.players[i];
 
-    if (alivePlayerCount === 1 && !player.isDead && allPlayersCount != 1) {
+    if (alivePlayerCount === 1 && !player.isDead && allPlayersCount !== 1) {
       this.winnerId = player.id;
       this.gameOver = true;
       this.endedAt = Date.now();
@@ -178,7 +178,7 @@ Game.prototype.update = function update() {
   }
 
   const now = Date.now();
-  if (now - this.lastPotionCreated > 7000) {
+  if (now - this.lastPotionCreated > 7000 && this.players.length > 1) {
     this.addHpPotions();
     this.lastPotionCreated = Date.now();
   }
@@ -236,7 +236,7 @@ io.on("connection", (socket) => {
   setInterval(() => {
     if (game.gameOver) {
       socket.disconnect(true);
-      if (Date.now() - game.endedAt > 1000) {
+      if (Date.now() - game.endedAt > 5000) {
         game.reset();
       }
     }
