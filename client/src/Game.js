@@ -171,5 +171,6 @@ export default class Game {
         this.socket.emit("DELETE_PROJECTILE", p);
       }
     });
+    console.log(this.projectiles);
   }
 }
