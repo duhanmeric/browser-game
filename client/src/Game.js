@@ -66,6 +66,7 @@ export default class Game {
         newProjectile.id = projectiles[i].id;
         newProjectile.fireX = projectiles[i].fireX;
         newProjectile.fireY = projectiles[i].fireY;
+        newProjectile.isOut = projectiles[i].isOut;
         newProjectiles.push(newProjectile);
       }
       this.projectiles = newProjectiles;
@@ -167,6 +168,7 @@ export default class Game {
     // ekrandan cikan mermileri silme
     this.projectiles.forEach((p, index) => {
       if (p.fireX > this.w || p.fireX < 0 || p.fireY < 0 || p.fireY > this.h) {
+        p.isOut = true;
         this.projectiles.splice(index, 1);
         this.socket.emit("DELETE_PROJECTILE", p);
       }
