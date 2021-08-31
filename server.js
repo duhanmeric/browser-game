@@ -87,7 +87,6 @@ var Game = function Game() {
   this.winnerId = null;
   this.endedAt = null;
   this.lastPotionCreated = Date.now();
-  this.lastProjectileCreated = Date.now();
 };
 
 Game.prototype.addPlayer = function addPlayer(id) {
@@ -273,7 +272,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("PLAYER_FIRE", function (y, x) {
-    const now = Date.now();
     const player = game.players.filter((player) => player.id === socket.id);
     if (player[0] && !player[0].isDead) {
       let angle = Math.atan2(y - (player[0].y + 32), x - (player[0].x + 32));
@@ -281,10 +279,7 @@ io.on("connection", (socket) => {
         x: Math.cos(angle),
         y: Math.sin(angle),
       };
-      if (now - game.lastProjectileCreated > 150) {
-        game.addProjectile(player[0], velocity);
-        game.lastProjectileCreated = Date.now();
-      }
+      game.addProjectile(player[0], velocity);
     }
   });
 
