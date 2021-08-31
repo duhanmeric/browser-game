@@ -60,6 +60,7 @@ var Projectile = function Projectile(player, velocity) {
   this.fireX = player.x + this.width / 2;
   this.fireY = player.y + this.width / 2;
   this.velocity = velocity;
+  this.isOut = false;
 };
 
 Projectile.prototype.update = function update() {
@@ -154,7 +155,8 @@ Game.prototype.update = function update() {
           player.y + this.projectiles[j].width > this.projectiles[j].fireY
         ) {
           player.health -= 5;
-          this.projectiles.splice(this.projectiles[j], 1);
+          this.projectiles[j].isOut = true;
+          this.projectiles = this.projectiles.filter((p) => !p.isOut);
         }
       }
     }
@@ -175,7 +177,7 @@ Game.prototype.update = function update() {
           player.health = 100;
         }
         this.hpPotions[j].collected = true;
-        this.hpPotions = this.hpPotions.filter((p) => !p.collected);
+        this.hpPotions = this.hpPotions.filter((h) => !h.collected);
       }
     }
   }
@@ -287,7 +289,11 @@ io.on("connection", (socket) => {
     const projectile = game.projectiles.filter(
       (projectile) => projectile.id === data.id
     );
-    game.projectiles.splice(projectile, 1);
+
+    if (projectile[0]) {
+      projectile[0].isOut = true;
+      game.projectiles = game.projectiles.filter((p) => !p.isOut);
+    }
   });
 });
 
