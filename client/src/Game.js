@@ -164,15 +164,5 @@ export default class Game {
         h.draw();
       });
     }
-
-    // ekrandan cikan mermileri silme
-    this.projectiles.forEach((p, index) => {
-      if (p.fireX > this.w || p.fireX < 0 || p.fireY < 0 || p.fireY > this.h) {
-        p.isOut = true;
-        this.projectiles.splice(index, 1);
-        this.socket.emit("DELETE_PROJECTILE", p);
-      }
-    });
-    console.log(this.projectiles);
   }
 }

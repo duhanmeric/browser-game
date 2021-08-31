@@ -88,6 +88,8 @@ var Game = function Game() {
   this.winnerId = null;
   this.endedAt = null;
   this.lastPotionCreated = Date.now();
+  this.w = 640;
+  this.h = 512;
 };
 
 Game.prototype.addPlayer = function addPlayer(id) {
@@ -162,6 +164,19 @@ Game.prototype.update = function update() {
     }
   }
 
+  for (let i = 0; i < this.projectiles.length; i++) {
+    const projectile = this.projectiles[i];
+    if (
+      projectile.fireX > this.w ||
+      projectile.fireX < 0 ||
+      projectile.fireY < 0 ||
+      projectile.fireY > this.h
+    ) {
+      projectile.isOut = true;
+      this.projectiles = this.projectiles.filter((p) => !p.isOut);
+    }
+  }
+
   for (let i = 0; i < this.players.length; i++) {
     const player = this.players[i];
     for (let j = 0; j < this.hpPotions.length; j++) {
@@ -214,6 +229,7 @@ const updateInterval = setInterval(() => {
       id: projectile.id,
       fireX: projectile.fireX,
       fireY: projectile.fireY,
+      isOut: projectile.isOut,
     }))
   );
 
@@ -285,16 +301,16 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("DELETE_PROJECTILE", function (data) {
-    const projectile = game.projectiles.filter(
-      (projectile) => projectile.id === data.id
-    );
+  // socket.on("DELETE_PROJECTILE", function (data) {
+  //   const projectile = game.projectiles.filter(
+  //     (projectile) => projectile.id === data.id
+  //   );
 
-    if (projectile[0] && projectile[0] !== undefined) {
-      projectile[0].isOut = true;
-      game.projectiles = game.projectiles.filter((p) => !p.isOut);
-    }
-  });
+  //   if (projectile[0] && projectile[0] !== undefined) {
+  //     projectile[0].isOut = true;
+  //     game.projectiles = game.projectiles.filter((p) => !p.isOut);
+  //   }
+  // });
 });
 
 server.listen(PORT, () => {
