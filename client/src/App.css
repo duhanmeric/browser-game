@@ -22,13 +22,14 @@ body {
   border: 1px solid white;
 }
 
-#login {
+#login #loginContainer {
   height: 50px;
   width: 350px;
   font-size: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0 auto;
 }
 
 #login input {
@@ -43,4 +44,12 @@ body {
   width: 25%;
   height: 100%;
   font-size: 20px;
+}
+
+#usernameError {
+  max-width: 300px;
+  text-align: center;
+  font-size: 24px;
+  color: #fff;
+  margin: 0 auto 30px auto;
 }
