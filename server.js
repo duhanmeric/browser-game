@@ -290,7 +290,7 @@ io.on("connection", (socket) => {
       (projectile) => projectile.id === data.id
     );
 
-    if (projectile[0]) {
+    if (projectile[0] && projectile[0] !== undefined) {
       projectile[0].isOut = true;
       game.projectiles = game.projectiles.filter((p) => !p.isOut);
     }
