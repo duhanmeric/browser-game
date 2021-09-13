@@ -14,4 +14,4 @@ WASD -> for movement, click -> for fire
 
 ## About Usernames
 
-Usernames character count must be in 3-10.
+Username characters count must be between 3-10
