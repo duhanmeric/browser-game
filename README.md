@@ -1,5 +1,7 @@
 # Cerez Royale
 
+https://user-images.githubusercontent.com/75217465/133141345-8495a406-e671-44c9-838a-92d8c6583478.mp4
+
 ## Video
 
 `coming soon`
